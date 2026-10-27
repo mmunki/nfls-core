@@ -1,0 +1,1 @@
+Create a wallet system with balance B >= 0. Transfer(amount) requires B >= amount.

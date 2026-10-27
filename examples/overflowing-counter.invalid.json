@@ -1,0 +1,33 @@
+{
+  "name": "overflowing-counter",
+  "variables": [
+    {
+      "name": "counter",
+      "sort": "Int",
+      "initial": "0",
+      "lower": "0",
+      "upper": "100",
+      "role": "state",
+      "description": ""
+    }
+  ],
+  "actions": [
+    {
+      "name": "increment",
+      "params": [],
+      "guard": null,
+      "updates": {
+        "counter": "counter + 1"
+      },
+      "description": ""
+    }
+  ],
+  "invariants": [
+    "counter >= 0",
+    "counter <= 100"
+  ],
+  "preconditions": [],
+  "postconditions": [],
+  "source": "A counter in [0, 100] with an unguarded increment.",
+  "metadata": {}
+}

@@ -1,0 +1,1 @@
+Create a non-negative counter that increments by 1 and cannot exceed max capacity 100

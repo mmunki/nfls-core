@@ -1,0 +1,62 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -e .
+      - name: Test
+        run: python -m unittest discover -s tests -v
+      - name: CLI smoke test
+        run: |
+          nfls verify --intent "Create a non-negative counter that increments by 1 and cannot exceed max capacity 100"
+          nfls compile --intent "Create a wallet system with balance B >= 0. Transfer(amount) requires B >= amount." --target python > /tmp/wallet.py
+          python /tmp/wallet.py
+
+  build:
+    name: build wheel and sdist
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Build distributions
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Install the wheel and smoke test it
+        run: |
+          python -m pip install dist/*.whl
+          cd /tmp
+          nfls verify --intent "Create a wallet system with balance B >= 0. Transfer(amount) requires B >= amount."
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfls-core-dist
+          path: dist/*

@@ -1,0 +1,42 @@
+{
+  "name": "wallet",
+  "variables": [
+    {
+      "name": "B",
+      "sort": "Int",
+      "initial": "0",
+      "lower": "0",
+      "upper": null,
+      "role": "state",
+      "description": "balance"
+    }
+  ],
+  "actions": [
+    {
+      "name": "transfer",
+      "params": [
+        {
+          "name": "amount",
+          "sort": "Int",
+          "initial": null,
+          "lower": null,
+          "upper": null,
+          "role": "param",
+          "description": ""
+        }
+      ],
+      "guard": "B >= amount",
+      "updates": {
+        "B": "B - amount"
+      },
+      "description": ""
+    }
+  ],
+  "invariants": [
+    "B >= 0"
+  ],
+  "preconditions": [],
+  "postconditions": [],
+  "source": "Create a wallet system with balance B >= 0. Transfer(amount) requires B >= amount.",
+  "metadata": {}
+}
